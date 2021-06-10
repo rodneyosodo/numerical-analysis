@@ -1,22 +1,32 @@
 function solveCCH
+    clear;
     [a, b, c, y_o, y_prime] = get_inputs();
-    solve_quadratic(a, b, c, y_o, y_prime);
+    equation1 = solve_quadratic(a, b, c, y_o, y_prime);
+    equation2 = solveEquationWithDSolve(a,b,c, y_o, y_prime);
+    ez1 = ezplot(str2sym(equation1) ,[-2 * pi,2 * pi]);
+    hold on;
+    ez2 = ezplot(equation2, [-2 * pi, 2 * pi]);
 end
 
-function solve_quadratic(a, b, c, y_o, y_prime)
+function eq = solve_quadratic(a, b, c, y_o, y_prime)
     discriminant = b .* b - 4  .*  a  .*  c;
     if (discriminant > 0)
         fprintf("The roots are real\n");
         r1 = (-b + sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
+        disp(r1);
         r2 = (-b - sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
+        disp(r2);
         A = [1 1;r1 r2];
         B = [y_o; y_prime];
         C = linsolve(A,B);
-        fprintf("Equation is: y = %fe^%ft + %fe^%ft\n", round(C(1), 4), r1, round(C(1), 4), r2);
+        disp(C);
+        eq = string(C(1)) + "*exp(" + string(r1) + "*t)" + " + " + string(C(2)) + "*exp(" + string(r2) + "*t)";
+        disp(eq);
     elseif (discriminant == 0)
         fprintf("The roots are repeated\n");
         r1 = (-b + sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
-        fprintf("Equation is: y = %fe^%ft + %fte^%ft\n", round(y_o, 4), r1, round((y_prime - r1 .* y_o), 4), r1);
+        eq = string(round(y_o, 4)) + "*exp(" + string(r1) + "*t)" + "+" + string(round((y_prime - r1 .* y_o), 4)) + "*t*exp(" + string(r1) + "*t)";
+        disp(eq);
     elseif (discriminant < 0)
         fprintf("The roots are imaginary\n");
         r1 = (-b + sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
@@ -25,7 +35,19 @@ function solve_quadratic(a, b, c, y_o, y_prime)
         B = [y_o; y_prime];
         C = linsolve(A,B);
         fprintf("Equation is: y = e^%ft (%f cos(%ft) + %f sin(%ft))\n", real(r1), round(C(1), 4), imag(r1), round(C(1), 4), -1  .*  imag(r2));
+        eq = "exp(" + string(real(r1)) + "*t)*" + string(round(C(1), 4)) + "*cos(" + string(imag(r1)) + "*t) - " + "exp(" + string(real(r1)) + "*t)*" + string(round(C(1), 4)) + "*sin(" + string(-1  .*  imag(r2)) + "*t)";
+        disp(eq);
     end
+end
+
+function dSolveSolution = solveEquationWithDSolve(a, b, c, y1, y2)
+    syms y(t)
+    Dy = diff(y, t);
+    ode_eqn = a * diff(y, t, 2) + b * diff(y, t) + c * y == 0;
+    cond = [y(0) == y1, Dy(0) == y2];
+    dSolveSolution = dsolve(ode_eqn, cond);
+    disp('DSolve Solution');
+    disp(dSolveSolution);
 end
 
 function [a, b, c, y_o, y_prime] = get_inputs()
