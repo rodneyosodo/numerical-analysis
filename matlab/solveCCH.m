@@ -37,7 +37,8 @@ function eq = solve_cch(a, b, c, y_o, y_prime)
         A = [1 0;real(r1) imag(r1)];
         B = [y_o; y_prime];
         C = linsolve(A,B);
-        eq = string(round(C(1), 4)) + "*cos(" + string(imag(r1)) + "*t)" + "*exp(" + string(real(r1)) + "*t)" + " - " + string(round(C(1), 4)) + "*sin(" + string(-1  .*  imag(r2)) + "*t)" + "*exp(" + string(real(r1)) + "*t)";
+        disp(C);
+        eq = string(round(C(1), 4)) + "*cos(" + string(imag(r1)) + "*t)" + "*exp(" + string(real(r1)) + "*t)" + " + " + string(round(C(1), 4)) + "*sin(" + string(-1  .*  imag(r2)) + "*t)" + "*exp(" + string(real(r1)) + "*t)";
         disp(eq);
     end
 end
