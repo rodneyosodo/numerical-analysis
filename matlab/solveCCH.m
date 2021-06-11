@@ -1,25 +1,25 @@
+% Aurthor:  Rodney Osodo
+% Course:   Bsc. Mechatronic Enhineering
+
 function solveCCH
-    clear;
+    % main function
     [a, b, c, y_o, y_prime] = get_inputs();
-    equation1 = solve_quadratic(a, b, c, y_o, y_prime);
+    equation1 = solve_cch(a, b, c, y_o, y_prime);
     equation2 = solveEquationWithDSolve(a,b,c, y_o, y_prime);
     ez1 = ezplot(str2sym(equation1) ,[-2 * pi,2 * pi]);
     hold on;
     ez2 = ezplot(equation2, [-2 * pi, 2 * pi]);
 end
 
-function eq = solve_quadratic(a, b, c, y_o, y_prime)
+function eq = solve_cch(a, b, c, y_o, y_prime)
     discriminant = b .* b - 4  .*  a  .*  c;
     if (discriminant > 0)
         fprintf("The roots are real\n");
         r1 = (-b + sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
-        disp(r1);
         r2 = (-b - sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
-        disp(r2);
         A = [1 1;r1 r2];
         B = [y_o; y_prime];
         C = linsolve(A,B);
-        disp(C);
         eq = string(C(1)) + "*exp(" + string(r1) + "*t)" + " + " + string(C(2)) + "*exp(" + string(r2) + "*t)";
         disp(eq);
     elseif (discriminant == 0)
@@ -34,13 +34,13 @@ function eq = solve_quadratic(a, b, c, y_o, y_prime)
         A = [1 0;real(r1) imag(r1)];
         B = [y_o; y_prime];
         C = linsolve(A,B);
-        fprintf("Equation is: y = e^%ft (%f cos(%ft) + %f sin(%ft))\n", real(r1), round(C(1), 4), imag(r1), round(C(1), 4), -1  .*  imag(r2));
-        eq = "exp(" + string(real(r1)) + "*t)*" + string(round(C(1), 4)) + "*cos(" + string(imag(r1)) + "*t) - " + "exp(" + string(real(r1)) + "*t)*" + string(round(C(1), 4)) + "*sin(" + string(-1  .*  imag(r2)) + "*t)";
+        eq = string(round(C(1), 4)) + "*cos(" + string(imag(r1)) + "*t)" + "*exp(" + string(real(r1)) + "*t)" + " - " + string(round(C(1), 4)) + "*sin(" + string(-1  .*  imag(r2)) + "*t)" + "*exp(" + string(real(r1)) + "*t)";
         disp(eq);
     end
 end
 
 function dSolveSolution = solveEquationWithDSolve(a, b, c, y1, y2)
+    % solves using dsolve
     syms y(t)
     Dy = diff(y, t);
     ode_eqn = a * diff(y, t, 2) + b * diff(y, t) + c * y == 0;
@@ -51,6 +51,11 @@ function dSolveSolution = solveEquationWithDSolve(a, b, c, y1, y2)
 end
 
 function [a, b, c, y_o, y_prime] = get_inputs()
+    % gets user input
+    syms a b c y(t) dy(t)
+    genericEqn = a*diff(y,2) + b *diff(y) + c*y == 0;
+    disp("Enter an equation of the form:");
+    disp(genericEqn);
     a = input('Enter the value of a: ');
     b = input('Enter the value of b: ');
     c = input('Enter the value of c: ');
