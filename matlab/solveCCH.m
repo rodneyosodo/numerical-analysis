@@ -25,7 +25,7 @@ function eq = solve_cch(a, b, c, y_o, y_prime)
         disp(eq);
     elseif (discriminant == 0)
         % 12*exp(2*t)+-27*t*exp(2*t)
-        fprintf("The roots are repeated\n");
+        fprintf("The roots are real and repeated\n");
         r1 = (-b + sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
         eq = string(round(y_o, 4)) + "*exp(" + string(r1) + "*t)" + "+" + string(round((y_prime - r1 .* y_o), 4)) + "*t*exp(" + string(r1) + "*t)";
         disp(eq);
