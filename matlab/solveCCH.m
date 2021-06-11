@@ -55,10 +55,6 @@ end
 
 function [a, b, c, y_o, y_prime] = get_inputs()
     % gets user input
-    syms a b c y(t) dy(t)
-    genericEqn = a*diff(y,2) + b *diff(y) + c*y == 0;
-    disp("Enter an equation of the form:");
-    disp(genericEqn);
     a = input('Enter the value of a: ');
     b = input('Enter the value of b: ');
     c = input('Enter the value of c: ');
