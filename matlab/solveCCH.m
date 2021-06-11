@@ -14,6 +14,7 @@ end
 function eq = solve_cch(a, b, c, y_o, y_prime)
     discriminant = b .* b - 4  .*  a  .*  c;
     if (discriminant > 0)
+        % 0.8*exp(3*t) + 0.2*exp(-2*t)
         fprintf("The roots are real\n");
         r1 = (-b + sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
         r2 = (-b - sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
@@ -23,11 +24,13 @@ function eq = solve_cch(a, b, c, y_o, y_prime)
         eq = string(C(1)) + "*exp(" + string(r1) + "*t)" + " + " + string(C(2)) + "*exp(" + string(r2) + "*t)";
         disp(eq);
     elseif (discriminant == 0)
+        % 12*exp(2*t)+-27*t*exp(2*t)
         fprintf("The roots are repeated\n");
         r1 = (-b + sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
         eq = string(round(y_o, 4)) + "*exp(" + string(r1) + "*t)" + "+" + string(round((y_prime - r1 .* y_o), 4)) + "*t*exp(" + string(r1) + "*t)";
         disp(eq);
     elseif (discriminant < 0)
+        % 1*cos(2*t)*exp(5*t) - 1*sin(2*t)*exp(5*t)
         fprintf("The roots are imaginary\n");
         r1 = (-b + sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
         r2 = (-b - sqrt((b .* b) - (4 .* a .* c))) ./ (2 .* a);
